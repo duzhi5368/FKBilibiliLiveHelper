@@ -1,0 +1,366 @@
+﻿<local:StyledWindow x:Class="Bililive_dm.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:biliDmLib="clr-namespace:BiliDMLib;assembly=BiliDMLib"
+        xmlns:local="clr-namespace:Bililive_dm"
+        xmlns:bililiveDm="clr-namespace:Bililive_dm"
+        xmlns:bilibiliDmPluginFramework="clr-namespace:BilibiliDM_PluginFramework;assembly=BilibiliDM_PluginFramework"
+        xmlns:s="clr-namespace:System;assembly=mscorlib"
+        xmlns:properties="clr-namespace:Bililive_dm.Properties"
+        mc:Ignorable="d"
+        Title="Bilibili直播小助手" Height="509" Width="842" FontSize="14.666" Background="#FFF1F3C1" WindowStyle="ToolWindow" MinWidth="842" MaxWidth="842" MinHeight="509" MaxHeight="509" ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <bililiveDm:PluginStatusConverter x:Key="Converter"/>
+
+            <DataTemplate x:Key="LogTemplate" >
+                <TextBlock Text="{Binding}" TextWrapping="Wrap" Cursor="Hand" MouseLeftButtonUp="OnUIElementMouseLeftButtonUp"/>
+            </DataTemplate>
+            <Style x:Key="FocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="OptionMarkFocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="BtnInfoStyle" TargetType="Button">
+                <Setter Property="Width" Value="70"/>
+                <Setter Property="Height" Value="25"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="#43a9c7"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2f96b4"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2a89a4"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="ButtonFocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#F3F3F3" Offset="0"/>
+                <GradientStop Color="#EBEBEB" Offset="0.5"/>
+                <GradientStop Color="#DDDDDD" Offset="0.5"/>
+                <GradientStop Color="#CDCDCD" Offset="1"/>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
+            <Style x:Key="ToggleButtonStyle1" TargetType="{x:Type ToggleButton}">
+                <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+                <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="1"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <Border x:Name="on" Width="25" Height="25" Background="LightGray" CornerRadius="2,0,0,4" Margin="5,0,0,0">
+                                    <TextBlock x:Name="onText" Text="On" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <Border x:Name="off" Width="25" Height="25" Background="LightGray" CornerRadius="0,2,4,0">
+                                    <TextBlock x:Name="offText" Text="Off" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="#ADADAD"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="true">
+                                    <Setter TargetName="on" Property="Background" Value="LightBlue"/>
+                                    <Setter TargetName="onText" Property="Foreground" Value="White"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter TargetName="off" Property="Background" Value="LightBlue"/>
+                                    <Setter TargetName="offText" Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <DockPanel>
+        <StackPanel VerticalAlignment="Top" Orientation="Horizontal" DockPanel.Dock="Top">
+            <TextBlock TextWrapping="Wrap"  Text="登录账号:" Padding="0" Margin="4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+            <TextBox x:Name="userAccount" TextWrapping="Wrap" Margin="4,0,0,0" Width="200" HorizontalAlignment="Left" VerticalAlignment="Center" MinWidth="200" MaxLength="32"/>
+            <TextBlock TextWrapping="Wrap" Text="密码:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
+            <PasswordBox x:Name="userPassword" Width="120" Margin="5,0,0,0" MinWidth="120" HorizontalAlignment="Left" VerticalAlignment="Center" MaxLength="32"/>
+            <Button Margin="10,0,0,0" VerticalAlignment="Center" x:Name="UserLogin" MinWidth="70" Click="OnUserLoginBtnClick" Content="用户登录"/>
+
+        </StackPanel>
+        <StackPanel VerticalAlignment="Center" DockPanel.Dock="Top" Orientation="Horizontal">
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="直播间地址: live.bilibili.com/"
+                       VerticalAlignment="Center" Margin="4" />
+            <TextBox x:Name="RoomId" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14.666" MinWidth="86" Width="86" MaxLength="11" />
+            <Button x:Name="ConnBtn" Content="{x:Static properties:Resources.ConnBtn_Content}" VerticalAlignment="Center"
+                    Click="OnEnterRoomBtnClick" Margin="5,0,0,0" MinWidth="70" />
+            <Button Content="{x:Static properties:Resources.DisconnBtn_Content}" Margin="5,0,0,0" VerticalAlignment="Center" x:Name="DisconnBtn" Click="OnLeaveRoomBtnClick" MinWidth="70"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static properties:Resources.TextBlock_Text}" VerticalAlignment="Center" Margin="3" />
+            <TextBlock  x:Name="OnlineBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0"
+                       VerticalAlignment="Center" Margin="0,0,5,0" />
+            <CheckBox Margin="5,0,0,0" VerticalAlignment="Center"  IsChecked="True" x:Name="AutoReconnect" Content="{x:Static properties:Resources.AutoReconnect_Content}"/>
+            <CheckBox Margin="5,0,0,0" VerticalAlignment="Center"  IsChecked="True" x:Name="SaveLog"       Content="{x:Static properties:Resources.SaveLog_Content}"    Checked="OnSaveLogChecked" Unchecked="OnSaveLogUnchecked"/>
+            <CheckBox Margin="5,0,0,0" VerticalAlignment="Center" IsChecked="False" x:Name="WindowTop"     Content="{x:Static properties:Resources.WindowTop_Content}"  Click="OnWindowTopChecked"/>
+            <Button x:Name="Test" Content="{x:Static properties:Resources.Test_Content}" VerticalAlignment="Center"
+                    Click="OnTestButtonClick" Margin="10,0,0,0" Width="26" />
+        </StackPanel>
+        <TabControl x:Name="TabControl" DockPanel.Dock="Top" Height="390" >
+            <TabItem Header="房间管理">
+                <!--<TextBox x:Name="log" TextWrapping="Wrap" DockPanel.Dock="Top" IsReadOnly="True" 
+                 VerticalScrollBarVisibility="Auto"  />-->
+
+
+                <DockPanel LastChildFill="False" Margin="0">
+                    <!--<TextBox x:Name="log" TextWrapping="Wrap" DockPanel.Dock="Top" IsReadOnly="True" 
+                 VerticalScrollBarVisibility="Auto"  />-->
+
+
+                    <StackPanel Height="359" VerticalAlignment="Center" Width="665">
+                        <ItemsControl  x:Name="Log" ItemsSource="{Binding}" RenderTransformOrigin="0.499,0.511" Margin="0" Width="660" Height="330" >
+                            <ItemsControl.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="0.263"/>
+                                    <TranslateTransform X="-0.023" Y="0.023"/>
+                                </TransformGroup>
+                            </ItemsControl.RenderTransform>
+
+                            <ItemsControl.Template>
+                                <ControlTemplate>
+                                    <ScrollViewer x:Name="LogScroll" CanContentScroll="True">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel IsItemsHost="True"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <StackPanel x:Name="SendMsgPanel" Height="27" Background="#FFECFAFD" Orientation="Horizontal" Margin="0" Width="677" VerticalAlignment="Bottom">
+                            <TextBlock TextWrapping="Wrap" Text="发送弹幕 : " HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" Margin="0,4,0,0"/>
+                            <Border Grid.Column="1"  BorderBrush="{x:Null}" Height="Auto">
+                                <TextBox Height="26" VerticalAlignment="Center" x:Name="input" AcceptsReturn="True" TextChanged="OnInputTextChanged" KeyUp="OnInputKeyUp" Width="400" MaxLength="60"/>
+                            </Border>
+                            <Border Grid.Column="2"  BorderBrush="{x:Null}" Height="Auto" Margin="5 0">
+                                <TextBlock VerticalAlignment="Center"><Run Text="( "/><InlineUIContainer>
+                                        <TextBlock x:Name="text_count"><Run Text="0"/></TextBlock>
+                                    </InlineUIContainer><Run Text=" )"/></TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+
+
+                    <!--<TextBox x:Name="log" TextWrapping="Wrap" DockPanel.Dock="Top" IsReadOnly="True" 
+                 VerticalScrollBarVisibility="Auto"  />-->
+                    <StackPanel DockPanel.Dock="Right" VerticalAlignment="Top" Margin="5,0,0,0">
+                        <CheckBox x:Name="ShowLevelBox" IsChecked="False" Content="显示等级" Checked="ShowLevelBox_Checked" Unchecked="ShowLevelBox_Unchecked" FontSize="12"/>
+                        <CheckBox x:Name="ShowMedalBox" IsChecked="False" Content="显示勋章" Margin="0" Checked="ShowMedalBox_Checked" Unchecked="ShowMedalBox_Unchecked" FontSize="12"/>
+                        <CheckBox x:Name="ShowTitleBox" IsChecked="False" Content="显示头衔" Margin="0" Unchecked="ShowTitleBox_Unchecked" Checked="ShowTitleBox_Checked" FontSize="12"/>
+                        <CheckBox x:Name="ShowEnterBox" IsChecked="True" Content="显示进房提示" Unchecked="ShowEnterBox_Unchecked" Checked="ShowEnterBox_Checked" FontSize="12"/>
+                        <CheckBox x:Name="ShowFollowBox" IsChecked="True" Content="显示关注提示" Margin="0" Checked="ShowFollowBox_Checked" Unchecked="ShowFollowBox_Unchecked" FontSize="12"/>
+                        <CheckBox x:Name="ShowGiftsBox" IsChecked="True" Content="显示礼物信息" Margin="0" Unchecked="ShowGiftsBox_Unchecked" Checked="ShowGiftsBox_Checked" FontSize="12"/>
+                        <CheckBox x:Name="ShowExternBox" IsChecked="True" Content="显示更多信息" Margin="0" Checked="ShowExternBox_Checked" Unchecked="ShowExternBox_Unchecked" FontSize="12"/>
+                        <StackPanel Height="18" Width="153" Orientation="Horizontal">
+                            <CheckBox x:Name="LevelShieldCheckBox" IsChecked="False" Content="屏蔽" Margin="0" Unchecked="LevelShieldCheckBox_Unchecked" Checked="LevelShieldCheckBox_Checked" FontSize="12"/>
+                            <TextBox x:Name="LevelShieldTextBox" Text="0" Height="18" TextWrapping="NoWrap" Margin="1,0,0,0" Width="18" MinWidth="18" HorizontalAlignment="Center" VerticalAlignment="Center" MaxLength="2" TextChanged="LevelShieldTextBox_TextChanged" FontSize="12"/>
+                            <TextBlock TextWrapping="NoWrap" Text="级以下用户" Margin="3,-1,-40,0" FontSize="12"/>
+                        </StackPanel>
+                        <Button x:Name="EditTTSConfig" Style="{StaticResource BtnInfoStyle}" Margin="5 0" Content="应答与语音配置" Click="EditTTSConfig_Click" Width="Auto" FontSize="14"/>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox x:Name="UseTTS" Content="开启语音播报" Checked="UseTTS_Checked" Unchecked="UseTTS_Unchecked" FontSize="12" VerticalAlignment="Bottom"/>
+                            <Button x:Name="TestTTS" Content="T" Width="19" Margin="10,0,0,0" Click="TestTTS_Click" Height="19" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock TextWrapping="Wrap" Text="引擎类型" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                            <ComboBox x:Name="EngineType_CB" Width="85" Margin="3,0,0,0" SelectedIndex="4" SelectionChanged="ComboBox_SelectionChanged" FontSize="10">
+                                <ComboBoxItem Content="百度基本"/>
+                                <ComboBoxItem Content="语音合成"/>
+                                <ComboBoxItem Content="谷歌"/>
+                                <ComboBoxItem Content="有道"/>
+                                <ComboBoxItem Content="百度配音"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock TextWrapping="Wrap" Text="配音声音" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                            <ComboBox x:Name="SpeechPerson_CB" Width="85" Margin="3,0,0,0" SelectedIndex="1" SelectionChanged="ComboBox_SelectionChanged_1" FontSize="10">
+                                <ComboBoxItem Content="度小美"/>
+                                <ComboBoxItem Content="度小宇"/>
+                                <ComboBoxItem Content="度逍遥"/>
+                                <ComboBoxItem Content="度丫丫"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock TextWrapping="Wrap" Text="语音音量" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                            <Slider x:Name="TTSVolumeSlider" Maximum="100" LargeChange="10" SmallChange="1" Width="82" Margin="3,0,0,0" ValueChanged="TTSVolumeSlider_ValueChanged" Value="70" FontSize="8"/>
+                        </StackPanel>
+                        <ScrollViewer Height="125">
+                            <StackPanel>
+                                <ToggleButton x:Name="TB_Use_Sound_UserEnterRoom" Content="进入房间 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserEnterRoom_Checked" Unchecked="TB_Use_Sound_UserEnterRoom_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Text_UserEnterRoom_Reply" Content="欢迎进入房间" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Text_UserEnterRoom_Reply_Checked" Unchecked="TB_Use_Text_UserEnterRoom_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserEnterRoom_Reply" Content="欢迎进入 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserEnterRoom_Reply_Checked" Unchecked="TB_Use_Sound_UserEnterRoom_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserFollow" Content="用户关注 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserFollow_Checked" Unchecked="TB_Use_Sound_UserFollow_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Text_UserFollow_Reply" Content="感谢用户关注" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Text_UserFollow_Reply_Checked" Unchecked="TB_Use_Text_UserFollow_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserFollow_Reply" Content="感谢关注 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserFollow_Reply_Checked" Unchecked="TB_Use_Sound_UserFollow_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserShare" Content="用户分享 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserShare_Checked" Unchecked="TB_Use_Sound_UserShare_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Text_UserShare_Reply" Content="感谢用户分享" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Text_UserShare_Reply_Checked" Unchecked="TB_Use_Text_UserShare_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserShare_Reply" Content="感谢分享 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserShare_Reply_Checked" Unchecked="TB_Use_Sound_UserShare_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserSpecialFollow" Content="用户特关 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserSpecialFollow_Checked" Unchecked="TB_Use_Sound_UserSpecialFollow_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Text_UserSpecialFollow_Reply" Content="感谢特别关注" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Text_UserSpecialFollow_Reply_Checked" Unchecked="TB_Use_Text_UserSpecialFollow_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserSpecialFollow_Reply" Content="感谢特关 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserSpecialFollow_Reply_Checked" Unchecked="TB_Use_Sound_UserSpecialFollow_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserSuperChat" Content="超级发言 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserSuperChat_Checked" Unchecked="TB_Use_Sound_UserSuperChat_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_UserChat" Content="用户发言 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_UserChat_Checked" Unchecked="TB_Use_Sound_UserChat_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_ReciveGift" Content="用户赠礼 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_ReciveGift_Checked" Unchecked="TB_Use_Sound_ReciveGift_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Text_ReciveGift_Reply" Content="感谢用户赠礼" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Text_ReciveGift_Reply_Checked" Unchecked="TB_Use_Text_ReciveGift_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_ReciveGift_Reply" Content="感谢赠礼 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_ReciveGift_Reply_Checked" Unchecked="TB_Use_Sound_ReciveGift_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_GuardBuy" Content="购买舰长 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_GuardBuy_Checked" Unchecked="TB_Use_Sound_GuardBuy_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Text_GuardBuy_Reply" Content="感谢购买舰长" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Text_GuardBuy_Reply_Checked" Unchecked="TB_Use_Text_GuardBuy_Reply_Unchecked"/>
+                                <ToggleButton x:Name="TB_Use_Sound_GuardBuy_Reply" Content="感谢上船 [音]" Style="{StaticResource ToggleButtonStyle1}" FontSize="12" Checked="TB_Use_Sound_GuardBuy_Reply_Checked" Unchecked="TB_Use_Sound_GuardBuy_Reply_Unchecked"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </StackPanel>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem  Header="基本统计">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid CanUserAddRows="False" x:Name="DataGrid2"  IsReadOnly="True" AutoGenerateColumns="False"
+                        d:DataContext="{d:DesignInstance bililiveDm:SessionItem}" Grid.Row="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding UserName}" ClipboardContentBinding="{Binding UserName}" Header="{x:Static properties:Resources.DataGridTextColumn_Header1}"/>
+                            <DataGridTextColumn Binding="{Binding num}" ClipboardContentBinding="{Binding num}" Header="{x:Static properties:Resources.DataGridTextColumn_Header2}" SortDirection="Descending"/>
+                            <DataGridTextColumn Binding="{Binding Item}" ClipboardContentBinding="{Binding Item}" Header="{x:Static properties:Resources.DataGridTextColumn_Header3}" SortDirection="Descending"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel x:Name="StaticPanel" HorizontalAlignment="Center" Grid.Row="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{x:Static properties:Resources.TextBlock_Text_R1}" Width="150"></TextBlock>
+                            <TextBlock HorizontalAlignment="Right" Text="{Binding DanmakuCountRaw}" Width="100" TextAlignment="Right"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock  Text="{x:Static properties:Resources.TextBlock_Text_R2}" Width="150"></TextBlock>
+                            <TextBlock HorizontalAlignment="Right" Text="{Binding DanmakuCountShow}" Width="100" TextAlignment="Right"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock  Text="{x:Static properties:Resources.TextBlock_Text_R3}" Width="150"></TextBlock>
+                            <TextBlock HorizontalAlignment="Right" Text="{Binding UserCount}" Width="100" TextAlignment="Right"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Center" Grid.Row="2" >
+                        <Button x:Name="ClearMe" Content="{x:Static properties:Resources.ClearMe_Content}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                     Click="ClearMe_OnClick"  DockPanel.Dock="Bottom" Margin="0,0,4,0" />
+                        <Button x:Name="ClearMe2" Content="{x:Static properties:Resources.ClearMe2_Content}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Click="ClearMe2_OnClick"  DockPanel.Dock="Bottom" Margin="0,0,4,0" />
+                        <Button x:Name="ClearMe4" Content="{x:Static properties:Resources.ClearMe4_Content}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Click="ClearMe4_OnClick"  DockPanel.Dock="Bottom" Margin="0,0,4,0" />
+                        <Button x:Name="ClearMe3" Content="{x:Static properties:Resources.ClearMe3_Content}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                      Click="ClearMe3_OnClick"  DockPanel.Dock="Bottom" Margin="0,0,4,0" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="{x:Static properties:Resources.TabItem_Header_Setting}">
+                <Grid VerticalAlignment="Top">
+                    <bililiveDm:OptionDialog x:Name="OptionDialog"/>
+                    <Canvas Width="0" Height="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                    <CheckBox x:Name="SideBar" Content="{x:Static properties:Resources.SideBar_Content}"  Checked="OnShowSideBarChecked"
+                      VerticalAlignment="Center" Unchecked="OnShowSideBarUnchecked" RenderTransformOrigin="4.561,0.433" Padding="7,-1,0,0" Margin="711,254,13,24" />
+                    <CheckBox Margin="618,254,122,24" VerticalAlignment="Center"                   x:Name="Full"          Content="{x:Static properties:Resources.Full_Content}"       Checked="OnShowFullOverlayChecked" Unchecked="OnShowFullOverlayUnchecked" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="点歌管理" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="数据分析"/>
+            <TabItem Header="挂件布局"/>
+            <TabItem Header="{x:Static properties:Resources.TabItem_Header_Plugin}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="0 2" Orientation="Horizontal">
+                        <TextBlock Text="{x:Static properties:Resources.TextBlock_Text_PluginDir}" VerticalAlignment="Center"></TextBlock>
+                        <Button Margin="5 0" Click="OnOpenPluginFolderClick" Content="{x:Static properties:Resources.Btn_Text_OpenPluginDir}"></Button>
+                    </StackPanel>
+                    <DataGrid CanUserAddRows="False" x:Name="PluginGrid"  IsReadOnly="True" AutoGenerateColumns="False" DockPanel.Dock="Top" SelectionMode="Single" SelectionUnit="FullRow"
+                  d:DataContext="{d:DesignInstance bilibiliDmPluginFramework:DMPlugin}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding PluginName}" ClipboardContentBinding="{Binding PluginName}" Header="{x:Static properties:Resources.DataGridTextColumn_Header_Plugin1}"/>
+                            <DataGridTextColumn Binding="{Binding PluginDesc}" ClipboardContentBinding="{Binding PluginDesc}" Header="{x:Static properties:Resources.DataGridTextColumn_Header_Plugin2}"/>
+                            <DataGridTextColumn Binding="{Binding PluginAuth}" ClipboardContentBinding="{Binding PluginAuth}" Header="{x:Static properties:Resources.DataGridTextColumn_Header_Plugin3}"/>
+                            <DataGridTextColumn Binding="{Binding Status,Converter={StaticResource Converter}}" Header="{x:Static properties:Resources.DataGridTextColumn_Header_Plugin4}"/>
+                            <DataGridTextColumn Binding="{Binding PluginVer}" ClipboardContentBinding="{Binding PluginVer}" Header="{x:Static properties:Resources.DataGridTextColumn_Header_Plugin5}"/>
+                        </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{x:Static properties:Resources.MenuItem_Header_PluginEnabvle}" Click="Plugin_Enable"/>
+                                <MenuItem Header="{x:Static properties:Resources.MenuItem_Header_PluginStop}" Click="Plugin_Disable"/>
+                                <MenuItem Header="{x:Static properties:Resources.MenuItem_Header_PluginAdmin}" Click="Plugin_admin"/>
+
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="帮助">
+                <WebBrowser x:Name="HelpWebBrowser" Margin="0" Source="https://duzhi5368.github.io/SINGLEPAGE/FKBilibiliLiveHelper.html"/>
+            </TabItem>
+            <TabItem Header="{x:Static properties:Resources.TabItem_Header_Web}" Opacity="0.1" Visibility="Hidden">
+                <TextBlock TextWrapping="Wrap" Margin="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="360" VerticalAlignment="Top"><Run Text="1："/><Run Text="主："/><Run Text="登录功能"/><LineBreak/><Run Text="2："/><Run Text="主："/><Run Text="发言弹幕"/><Run Text="【登录】https://github.com/Bililive/SendDanmaku"/><LineBreak/><Run Text="3："/><Run Text="主："/><Run Text="详情控制"/><Run Text=" "/><Run Text="https://github.com/Executor-Cheng/ExtendLogging"/><LineBreak/><Run Text="4"/><Run Text="："/><Run Text="管理组件："/><Run Text="自动欢迎/感谢弹幕"/><Run Text="/定时广告 "/><Run Text="- 语音播报"/><Run Text="【登录】"/><Run Text=" "/><Run Text="https://github.com/Elepover/RE-TTSCat"/><LineBreak/><Run Text="5"/><Run Text="："/><Run Text="管理组件："/><Run Text="远程控制（"/><Run Text="禁言"/><Run Text="）"/><Run Text="【登录】"/><LineBreak/><Run Text="6"/><Run Text="："/><Run Text="点歌组件；"/><Run Text="自动点歌功能"/><Run Text="（修复点歌姬和自动查歌"/><Run Text=" "/><Run/><LineBreak/><Run Text="&#x9;"/><Run Text="https://github.com/Bililive/DGJv3"/><LineBreak/><Run Text="&#x9;"/><Run Text="https://github.com/Executor-Cheng/MiguMusic_DGJModule"/><LineBreak/><Run Text="&#x9;"/><Run Text="https://github.com/Executor-Cheng/ExtendNetease_DGJModule）"/><LineBreak/><Run Text="7"/><Run Text="："/><Run Text="统计组件："/><Run Text="加强统计功能"/><Run Text="（例如：进入人数，关注人数，礼物人数等，以日为单位）"/><LineBreak/><Run Text="8"/><Run Text="："/><Run Text="统计组件；"/><Run Text="自动加载功能（例如：礼物记录，进入人数，关注人数）"/><LineBreak/><Run Text="9：其他组件；弹幕抽奖"/><Run Text="，弹幕投票"/><Run Text="等功能"/><LineBreak/><Run Text="&#x9;https://github.com/Bililive/Lottery"/><LineBreak/><Run Text="&#x9;"/><Run Text="https://github.com/MittWillson/danmuji-plugin-tpj"/><LineBreak/><Run Text="11：虚拟live2D角色支持"/><LineBreak/><Run Text="1"/><Run Text="2"/><Run Text="：录制组件："/><Run Text="录播姬"/><LineBreak/><Run Text="1"/><Run Text="3"/><Run Text="：弹幕养成插件"/><Run Text=" "/><Run Text="https://github.com/LorisYounger/RollWorldDM"/><LineBreak/><Run Text="12：网页版；https://github.com/pandaGao/bilibili-live-helper"/></TextBlock>
+            </TabItem>
+        </TabControl>
+        <StackPanel VerticalAlignment="Center" DockPanel.Dock="Bottom" Orientation="Horizontal" Width="834" Height="27" Background="#FF5CB6F5">
+            <TextBlock TextWrapping="Wrap" Text="{x:Static properties:Resources.ABout_Text}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Content="语" Width="25" HorizontalAlignment="Right" VerticalAlignment="Center" Click="SelectLanguage" Margin="345,0,0,0"/>
+            <Button Content="肤" Width="25" HorizontalAlignment="Right" VerticalAlignment="Center" Click="Skin_Click" Margin="5,0,0,0"/>
+        </StackPanel>
+
+
+
+    </DockPanel>
+</local:StyledWindow>

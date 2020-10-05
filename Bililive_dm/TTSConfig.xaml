@@ -1,0 +1,73 @@
+﻿<Window x:Class="Bililive_dm.TTSConfig"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Bililive_dm"
+        mc:Ignorable="d"
+        Title="语音文本编辑" Height="410" Width="510" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+    <StackPanel Margin="2,0,2,5" Width="488">
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" CanVerticallyScroll="True" Height="333">
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="用户进入房间"/>
+                <TextBox x:Name="Text_UserEnterRoom" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="[答] 用户进入房间"/>
+                <TextBox x:Name="Text_UserEnterRoom_Reply" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="用户关注主播"/>
+                <TextBox x:Name="Text_UserFollow" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="[答] 用户关注主播"/>
+                <TextBox x:Name="Text_UserFollow_Reply" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="用户分享直播间"/>
+                <TextBox x:Name="Text_UserShare" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="[答] 用户分享直播间"/>
+                <TextBox x:Name="Text_UserShare_Reply" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="用户特别关注主播"/>
+                <TextBox x:Name="Text_UserSpecialFollow" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="[答] 用户特别关注主播"/>
+                <TextBox x:Name="Text_UserSpecialFollow_Reply" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="用户发布醒目留言"/>
+                <TextBox x:Name="Text_UserSuperChat" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="用户发言"/>
+                <TextBox x:Name="Text_UserChat" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="收到用户礼物"/>
+                <TextBox x:Name="Text_ReciveGift" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="[答] 收到用户礼物"/>
+                <TextBox x:Name="Text_ReciveGift_Reply" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="新用户上船"/>
+                <TextBox x:Name="Text_GuardBuy" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+            <DockPanel LastChildFill="False" Width="488">
+                <TextBlock TextWrapping="Wrap" Text="[答] 新用户上船"/>
+                <TextBox x:Name="Text_GuardBuy_Reply" Height="23" TextWrapping="Wrap" Width="350" DockPanel.Dock="Right"/>
+            </DockPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Height="30">
+            <Button x:Name="SaveConfig" Content="保  存" Width="80" Margin="130,0,0,0" Click="SaveConfig_Click"/>
+            <Button x:Name="Cancel" Content="取  消" Width="80" Margin="80,0,0,0" Click="Cancel_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
